@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: mymindstorm/setup-emsdk@v6
+        with:
+          version: 1.39.20
+
+      - name: install
+        run: yarn install
+
+      - name: test
+        run: yarn run test
+
+      - name: install clang-format
+        run: sudo apt install clang-format
+
+      - name: check style
+        run: yarn run check:style
